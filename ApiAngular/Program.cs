@@ -20,5 +20,11 @@ namespace ApiAngular
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+
+       
+
+        public static string Cadena ="Server=SMLPTEI007\\SQLEXPRESS; Database=MyCompany; Trusted_Connection=True;";
+
+
     }
 }

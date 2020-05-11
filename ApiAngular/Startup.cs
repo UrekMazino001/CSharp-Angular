@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+//using System.Web.Http.Cors;
+
 
 namespace ApiAngular
 {
@@ -21,6 +20,7 @@ namespace ApiAngular
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -31,6 +31,13 @@ namespace ApiAngular
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //Problema con el CORS
+
+            services.AddCors();
+
+            //Inyección de dependencia de EF
+            //var connection = @"Server=SMLPTEI007\SQLEXPRESS;DataBase=MyCompany;Trusted_Connection=True;";
+            services.AddDbContext<Conexion.MyDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyCompany"))); 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -47,6 +54,21 @@ namespace ApiAngular
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            //Problema con el CORS
+            app.UseCors(x =>
+            {
+                x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+            });
+
+            //app.UseCors(
+            //      options => options.WithOrigins("http://localhost:4200").AllowAnyMethod()
+            //  );
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
